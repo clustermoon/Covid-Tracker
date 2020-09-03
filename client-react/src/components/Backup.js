@@ -10,7 +10,7 @@ import {
 import {formatRelative } from "date-fns";
 import usePlacesAutoComplete, { getGeocode, getLatlng, } from "use-places-autocomplete"
 import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption, } from "@reach/combobox";
-import mapStyles from "./mapStyles";
+import mapStyles from "../mapStyles";
 
 let mapMarkers = [];
 const libraries = ["places"];
@@ -28,9 +28,7 @@ const options = {
   zoomControl: true,
 };
 
-
-
-export default function App() {
+function Backup() {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyCgWiGsTsAbjy5EikIKTAwbS4VIxE5oBgI",
     libraries,
@@ -91,3 +89,4 @@ export default function App() {
   );
   
 }
+export default Backup;
