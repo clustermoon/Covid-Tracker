@@ -15,8 +15,8 @@ import mapStyles from "../mapStyles";
 let mapMarkers = [];
 const libraries = ["places"];
 const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
+  width: '100vw',
+  height: '100vh',
 };
 const center = {
   lat: 31.941060,
