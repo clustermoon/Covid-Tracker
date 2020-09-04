@@ -1,0 +1,36 @@
+body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 1500% 1500%;
+	animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.landingContainer{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15%;
+    margin-left: 45%;
+}
+
+.labels{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+h6{
+    padding-right: 5px;
+}
+.lgn{
+    padding-left: 20px;
+}
