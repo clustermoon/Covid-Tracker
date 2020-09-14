@@ -1,10 +1,13 @@
 import React from 'react';
 import "../styles/Index.css";
 
+const styleSheet = "../styles/Index.css"
+
 const Home = () => (
     <div>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-        <div class="container">
+        <link rel="stylesheet" type="text/css" href={styleSheet}/>
+        <div class="oContainer">
                 <h1 class="child">COVID-Tracker</h1>
                 <h2 class="child">Sign up or login for free!</h2><br/>
                 <div class="child">

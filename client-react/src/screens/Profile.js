@@ -1,8 +1,16 @@
 import React from 'react';
 
 
-const Profile = () => (
-    <p>test123</p>
-);
+class Profile extends React.Component {
+    
+
+    render(){
+        return(
+            <div>
+
+            </div>
+        )
+    }
+};
 
 export default Profile;

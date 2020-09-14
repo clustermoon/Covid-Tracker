@@ -6,7 +6,8 @@ import Profile from './screens/Profile';
 import Tracker from './screens/Tracker';
 import SignUp from './screens/SignUp';
 import Login from './screens/Login';
-import {BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import {BrowserRouter as Router, Route, } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import * as serviceWorker from './serviceWorker';
 
 
