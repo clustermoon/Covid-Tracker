@@ -24,8 +24,8 @@ import "@reach/combobox/styles.css";
 
 const libraries = ["places"]
 const mapContainerStyle = {
-    width: '80vw',
-    height: '99vh',
+    width: '100vw',
+    height: '100vh',
 }
 const mapCenter = {
     lat: 43.653225,
@@ -68,7 +68,7 @@ export default function Tracker(){
     if (!isLoaded) return "Loading Maps";
 
     return (
-            <div class="row">
+            <div className="mContain">
                 <div class="bottomMenu">
                     <h3 className="child titleTracker">COVID-TRACKER</h3>
                     <br/><br/><br/><br/>
@@ -81,8 +81,6 @@ export default function Tracker(){
                             </li>
                         )}
                     </ul>
-                    <br/><br/><br/><br/>
-                    <h5 className="child">Created by TeamJango</h5>
                 </div>
                 <div class="mainMenu column col-md">
                     <div class="mapContainer">
