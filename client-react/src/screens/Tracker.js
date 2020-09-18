@@ -6,10 +6,9 @@ import {
     InfoWindow
 } from "@react-google-maps/api";
 import mapStyles from '../mapStyles';
-import { formatRelative } from "date-fns";
+//import { formatRelative } from "date-fns";
 import usePlacesAutocomplete, {
     getGeocode,
-    getLanLng,
     getLatLng,
 }from "use-places-autocomplete";
 import {
@@ -20,14 +19,13 @@ import {
     ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
-//import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import {Link} from "react-router-dom";
+//import {Link} from "react-router-dom";
 //-----------------------------------------------------------------------
 
 const libraries = ["places"]
 const mapContainerStyle = {
     width: '80vw',
-    height: '88vh',
+    height: '99vh',
 }
 const mapCenter = {
     lat: 43.653225,
@@ -37,10 +35,6 @@ const mapOptions = {
     styles: mapStyles,
     disableDefaultUI: true,
     zoomControl: true
-}
-
-function currentMarker(markers) {
-    return markers.current;
 }
 
 //-----------------------------------------------------------------------
@@ -68,34 +62,32 @@ export default function Tracker(){
         mapRef.current.setZoom(14);
     }, []);
 
+
     //Load error catches
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps";
 
     return (
             <div class="row">
-                <div class="otherMenu">
-                    <br/><ul class="sidemenuPlaceholder">
-                            <li><h2>Menu</h2></li>
-                            <Link to="/profile"><li>Profile</li></Link>
-                            <Link to="/tracker"><li>Tracker</li></Link>
-                            <Link to="/"><li>Sign out</li></Link>
-                            <br/><br/><br/><br/><br/><br/>
-                            <h3>Click on the locations you have visited in the past 2 weeks</h3>
-                            <br/>
-                            <p>Try and include all locations you've visited, to help better organize the data</p>
-                            <br/><br/><br/><br/><br/><br/>
-                            <h4>Made by Team-Jango</h4>
-                            <div class="teamMembers">
-                                <img src="img_david.jpg"></img>
-                                <img src="img_micheal.png"></img>
-                            </div>
-                            <p>David ---------- Micheal</p>
-                            <p>our contact info</p>
+                <div class="bottomMenu">
+                    <h3 className="child titleTracker">COVID-TRACKER</h3>
+                    <br/><br/><br/><br/>
+                    <p className="child">Please click the locations you have visited</p>
+                    <p className="child"> in the past 2 weeks. </p>
+                    <ul className="markerList">
+                        {markers.map(markers => 
+                            <li>
+                                Marker {markers.id}    
+                            </li>
+                        )}
                     </ul>
+                    <br/><br/><br/><br/>
+                    <h5 className="child">Created by TeamJango</h5>
                 </div>
                 <div class="mainMenu column col-md">
                     <div class="mapContainer">
+                        <Search panTo={ panTo } />
+                        <Locate panTo={ panTo } />
                         <GoogleMap 
                             mapContainerStyle={mapContainerStyle}
                             zoom={8}
@@ -138,13 +130,9 @@ export default function Tracker(){
                             ) : null}
 
                         </GoogleMap>
-                        <Search panTo={ panTo } />
-                        <Locate panTo={ panTo } />
-                    </div>
-                    <div class="bottomMenu">
-                        <br/><br/><h1>TEST</h1>
                     </div>
                 </div>
+                <div className="bg"/>
             </div>
     )
 }
@@ -157,7 +145,10 @@ function Locate({ panTo }) {
             onClick={() => {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        console.log(position);
+                        panTo({
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                        });
                     },
                     () => null
                 );
@@ -179,7 +170,7 @@ function Search({ panTo }){
         clearSuggestions,
     } = usePlacesAutocomplete({
         requestOptions: {
-            location: {lat: () => 43, lng: () => -79 },
+            location: {lat: () => 43.653225, lng: () => -79.383186 },
             radius: 200 * 1000,
         },
     });
@@ -208,7 +199,7 @@ function Search({ panTo }){
                 disabled={!ready}
                 placeholder="Enter an address"
             />
-            <ComboboxPopover>
+            <ComboboxPopover className="popover">
                 <ComboboxList>
                     {status === "OK" && 
                         data.map(({id, description}) => (
@@ -223,3 +214,6 @@ function Search({ panTo }){
     </div>
     )
 }
+
+//-----------------------------------------------------------------------
+
