@@ -14,7 +14,7 @@ client.connect(err => {
   client.close();
 });
 
-var TaskModel = mongoose.model("TaskModel", TaskModelSchema);
+var TaskModel = mongoose.model("TaskModel", TaskModel);
 
 
 router.get("/", function(req, res, next) {

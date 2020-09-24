@@ -150,9 +150,8 @@ z-index: 1;
 }
 
 .mapContainer{
-display: block;
 float:right;
-max-width: 90%;
+max-width: 85%;
 z-index: 1;
 }
 
@@ -272,4 +271,34 @@ padding-top: 2em;
 
 @media only screen and (max-width: 767px){	
 
+}
+
+.pTag{
+	margin-left: 35%;
+	margin-right: 33%;
+}
+
+.teamImg{
+	max-width: 50%;
+	background-color: white;
+}
+
+.lefty{
+	padding-right: 12em;
+}
+
+.iContainer{
+	display: flex;
+	justify-content: center;
+	margin-left: 12%;
+	margin-right: 22%;
+}
+
+.profileName{
+	margin-top: 10%;
+	margin-left: 10%;
+	padding-left: 25%;
+	z-index: 10;
+	opacity: 100%;
+	color: white;
 }

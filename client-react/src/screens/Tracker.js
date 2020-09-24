@@ -10,6 +10,7 @@ import mapStyles from '../mapStyles';
 import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
+
 }from "use-places-autocomplete";
 import {
     Combobox,
@@ -19,9 +20,12 @@ import {
     ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
+import axios from 'axios'
 //import {Link} from "react-router-dom";
+import 'react-google-maps'
+import Geocode from 'react-geocode';
 //-----------------------------------------------------------------------
-
+Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
 const libraries = ["places"]
 const mapContainerStyle = {
     width: '100vw',
@@ -36,7 +40,6 @@ const mapOptions = {
     disableDefaultUI: true,
     zoomControl: true
 }
-
 //-----------------------------------------------------------------------
 export default function Tracker(){
     const {isLoaded, loadError} = useLoadScript({
@@ -53,7 +56,7 @@ export default function Tracker(){
     const onMapLoad = React.useCallback((map) => {
         mapRef.current = map;
     }, []);
-    //Unique id for markers
+    //unique key for arrays
     const index = markers.length;
 
     //pan to current selection
@@ -61,7 +64,7 @@ export default function Tracker(){
         mapRef.current.panTo({lat, lng});
         mapRef.current.setZoom(14);
     }, []);
-
+    
 
     //Load error catches
     if (loadError) return "Error loading maps";
@@ -69,21 +72,24 @@ export default function Tracker(){
 
     return (
             <div className="mContain">
-                <div class="bottomMenu">
+                <div className="bottomMenu">
                     <h3 className="child titleTracker">COVID-TRACKER</h3>
                     <br/><br/><br/><br/>
                     <p className="child">Please click the locations you have visited</p>
                     <p className="child"> in the past 2 weeks. </p>
                     <ul className="markerList">
-                        {markers.map(markers => 
-                            <li>
-                                Marker {markers.id}    
+                        {markers.map(markers =>
+                            <li key={markers.id}>
+                                {markers.id} Marker
+                                {markerLocator(markers)}
                             </li>
+
                         )}
                     </ul>
+                    <button className="btn btn-primary" >Done</button>
                 </div>
-                <div class="mainMenu column col-md">
-                    <div class="mapContainer">
+                <div className="mainMenu column col-md">
+                    <div className="mapContainer">
                         <Search panTo={ panTo } />
                         <Locate panTo={ panTo } />
                         <GoogleMap 
@@ -93,17 +99,17 @@ export default function Tracker(){
                             options={mapOptions}
                             onClick={(event)=>{
                                 console.log(markers);
-                                setSelected(null);
                                 setMarkers(current => [...current, {
                                     lat: event.latLng.lat(),
                                     lng: event.latLng.lng(),
                                     id: index,
+                                    position: []
                                 }
-                                ])
+                                ]);
                             }}
                             onLoad={onMapLoad}
                         >
-
+                            
                             {markers.map((marker) => (
                                 <Marker
                                     key={marker.id}
@@ -113,19 +119,6 @@ export default function Tracker(){
                                     }}
                                 />
                             ))}
-
-                            {selected ? (
-                                <InfoWindow 
-                                    position={{ lat: selected.lat, lng: selected.lng }} 
-                                    onColoseClick={()=> {
-                                        setSelected(null);
-                                    }}  
-                                >
-                                    <div>
-                                        <p>location of selected marker</p>
-                                    </div>
-                                </InfoWindow>
-                            ) : null}
 
                         </GoogleMap>
                     </div>
@@ -154,6 +147,17 @@ function Locate({ panTo }) {
         >
             <img src="explore.png" alt="compass - locate me" />
         </button>
+    )
+}
+
+function markerLocator(markers){
+    var mlat = markers.lat;
+    var mlng = markers.lng;
+    Geocode.fromLatLng(mlat, mlng).then(
+        response => {
+            const address = response.results[0].formatted_address;
+            markers.position.push(address);
+        }
     )
 }
 
@@ -215,3 +219,4 @@ function Search({ panTo }){
 
 //-----------------------------------------------------------------------
 
+//-----------------------------------------------------------------------

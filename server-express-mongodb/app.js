@@ -4,8 +4,10 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 var mongoose = require("mongoose");
+const port = process.env.PORT || 3001;
 
-var tasksRouter = require("./routes/tasks");
+//var trackerRouter = require("./routes/tracker");
+//var tasksRouter = require("./routes/tasks");
 
 var app = express();
 
@@ -15,8 +17,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
+app.listen(port, function() {
+    console.log("Runnning on " + port);
+});
 
-app.use("/tasks", tasksRouter);
+//app.use("/tasks", tasksRouter);
+//app.use("/tracker", trackerRouter);
 
 //added for front end management- MC 8-29
 app.use(function(req, res, next) {

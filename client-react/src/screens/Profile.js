@@ -1,16 +1,15 @@
 import React from 'react';
 
 
-class Profile extends React.Component {
-    
-
-    render(){
-        return(
-            <div>
-
-            </div>
-        )
-    }
-};
+const Profile = () => {
+     return(
+         <div>
+             <div className="oContainer" >
+                <h1 className="child" >-first + last name-</h1>
+             </div>
+             <div className="bg"/>
+         </div>
+     )
+}
 
 export default Profile;
