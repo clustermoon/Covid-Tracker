@@ -1,12 +1,11 @@
 import React from 'react';
+import {useHistory} from 'react-router-dom';
 import {
     GoogleMap,
     Marker,
     useLoadScript,
-    InfoWindow
 } from "@react-google-maps/api";
-import mapStyles from '../mapStyles';
-//import { formatRelative } from "date-fns";
+import mapStyles from '../../mapStyles';
 import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
@@ -20,16 +19,17 @@ import {
     ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
-import axios from 'axios'
-//import {Link} from "react-router-dom";
-import 'react-google-maps'
 import Geocode from 'react-geocode';
+import M from 'materialize-css';
+
 //-----------------------------------------------------------------------
+
 Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
+Geocode.setLanguage("en");
 const libraries = ["places"]
 const mapContainerStyle = {
-    width: '100vw',
-    height: '100vh',
+    width: '68vw',
+    height: '82vh',
 }
 const mapCenter = {
     lat: 43.653225,
@@ -40,16 +40,62 @@ const mapOptions = {
     disableDefaultUI: true,
     zoomControl: true
 }
+
 //-----------------------------------------------------------------------
+
 export default function Tracker(){
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     });
-
+    const history = useHistory();
     //Control the markers state
-    const [markers, setMarkers] = React.useState([]);
-    const [selected, setSelected] = React.useState(null);
+    const [markers, setMarkers] = React.useState([]); 
+    const markerAddress = [];     
+    const markerCoords = [];   
+    const postData = () =>{
+        fetch("/tracker", {
+            method: "post",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":"Bearer "+localStorage.getItem("jwt")
+            },
+            body:JSON.stringify({
+                markerAddress,
+            })
+        }).then(res=>res.json())
+        .then(data=>{
+            if(data.error){
+                M.toast({html: data.error, classes:"#c62828 red darken-3"});
+            }else{
+                M.toast({html:"Success", classes:"#81c784 green lighten-2"});
+                history.push('/profile');
+            }
+        });
+    }
+
+    function pushCoords(markers){
+        markerCoords.push([
+            markers.lat,
+            markers.lng
+        ])
+    }
+
+    const getAddress = (markers) =>{
+        var lat = markers.lat;
+        var lng = markers.lng;
+        Geocode.fromLatLng(lat, lng).then(
+            response => {
+                const address = response.results[0].formatted_address;
+                console.log(markerAddress);
+                markerAddress.push(address);
+            },
+            error => {
+                console.log(error);
+            }
+        )
+    }
+
 
     //Call back function to stop rerenders
     const mapRef = React.useRef();
@@ -65,68 +111,73 @@ export default function Tracker(){
         mapRef.current.setZoom(14);
     }, []);
     
-
+    
     //Load error catches
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps";
 
-    return (
-            <div className="mContain">
-                <div className="bottomMenu">
-                    <h3 className="child titleTracker">COVID-TRACKER</h3>
-                    <br/><br/><br/><br/>
-                    <p className="child">Please click the locations you have visited</p>
-                    <p className="child"> in the past 2 weeks. </p>
-                    <ul className="markerList">
-                        {markers.map(markers =>
-                            <li key={markers.id}>
-                                {markers.id} Marker
-                                {markerLocator(markers)}
-                            </li>
+    return(
+        
+        <div className="mContain">
+        <div className="bottomMenu">
+            <h3 className="child titleTracker">COVID-TRACKER</h3>
+            <br/><br/><br/><br/>
+            <p className="child">Please click the locations you have visited</p>
+            <p className="child"> in the past 2 weeks. </p>
+            <ul className="markerList">
+                <li id="lI" ></li>
+                {markers.map(markers =>
+                    <li key={markers.id}>
+                        {markers.id} Marker
+                        {pushCoords(markers)}
+                    </li>
 
-                        )}
-                    </ul>
-                    <button className="btn btn-primary" >Done</button>
-                </div>
-                <div className="mainMenu column col-md">
-                    <div className="mapContainer">
-                        <Search panTo={ panTo } />
-                        <Locate panTo={ panTo } />
-                        <GoogleMap 
-                            mapContainerStyle={mapContainerStyle}
-                            zoom={8}
-                            center={mapCenter}
-                            options={mapOptions}
-                            onClick={(event)=>{
-                                console.log(markers);
-                                setMarkers(current => [...current, {
-                                    lat: event.latLng.lat(),
-                                    lng: event.latLng.lng(),
-                                    id: index,
-                                    position: []
-                                }
-                                ]);
-                            }}
-                            onLoad={onMapLoad}
-                        >
-                            
-                            {markers.map((marker) => (
-                                <Marker
-                                    key={marker.id}
-                                    position={{lat: marker.lat, lng: marker.lng }}
-                                    onClick={() => {
-                                        setSelected(marker);
-                                    }}
-                                />
-                            ))}
+                )}
+            </ul>
+            <button 
+                className="btn btn-primary" 
+                type="submit" 
+                name="action"
+                onClick={()=>postData()}
+            >Submit</button> 
+        </div>
+        <div className="mainMenu">
+            <div id="map" className="mapContainer">
+                <Search panTo={ panTo } />
+                <Locate panTo={ panTo } />
+                <GoogleMap 
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={8}
+                    center={mapCenter}
+                    options={mapOptions}
+                    onClick={(event)=>{        
+                        getAddress(event); 
+                        setMarkers(current => [...current, {
+                            lat: event.latLng.lat(),
+                            lng: event.latLng.lng(),
+                            id: index,
+                            position: []
+                        },
+                        ]);
+                    }}
+                    onLoad={onMapLoad}
+                >
+                    
+                    {markers.map((marker) => (
+                        <Marker
+                            key={marker.id}
+                            position={{lat: marker.lat, lng: marker.lng }}
+                        />
+                    ))}
 
-                        </GoogleMap>
-                    </div>
-                </div>
-                <div className="bg"/>
+                </GoogleMap>
             </div>
+        </div>
+        <div className="bg"/>
+    </div>
     )
 }
+
 //-----------------------------------------------------------------------
 
 function Locate({ panTo }) {
@@ -150,16 +201,6 @@ function Locate({ panTo }) {
     )
 }
 
-function markerLocator(markers){
-    var mlat = markers.lat;
-    var mlng = markers.lng;
-    Geocode.fromLatLng(mlat, mlng).then(
-        response => {
-            const address = response.results[0].formatted_address;
-            markers.position.push(address);
-        }
-    )
-}
 
 //-----------------------------------------------------------------------
 
