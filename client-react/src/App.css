@@ -74,7 +74,7 @@ z-index: 10;
 
 nav .brand-logo{
     position: relative;
-    left: 40%;
+    left: 50%;
 }
 
 .teamImg{
@@ -112,4 +112,14 @@ nav .brand-logo{
 
 .mContainer{
     margin-top: 10rem;
+}
+
+@media only screen and (max-width: 768px){
+    .search{
+        top: 45rem;
+    }
+
+    nav .brand-logo{
+        left: 18%;
+    }
 }

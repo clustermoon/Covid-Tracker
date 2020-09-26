@@ -9,23 +9,21 @@ const Profile = ()=>{
         }
     }).then(res=>res.json())
     .then(result=>{
-        console.log(result)
-        //setData(result);
+        //console.log(result)
+        setData(result.posts);
     })
 
 
     return(
         <div className="oContainer">
             <h1 className="child pTag">Welcome</h1>
-            {
-                data.map(item=>{
-                    return(
-                        <div>
-                            {item.markerPositions}
-                        </div>
-                    )
-                })
-            }
+            {data.map(item=>{
+                return(
+                    <div>
+                    </div>
+                )
+            })}
+
         </div>
     )
 }

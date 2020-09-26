@@ -1,4 +1,4 @@
-import React, {useEffect, createContext, useReducer} from 'react';
+import React, {useEffect, createContext, useReducer, useContext} from 'react';
 import NavBar from './components/navbar';
 import "./App.css";
 import {BrowserRouter, Route, Switch, useHistory} from 'react-router-dom';
@@ -11,8 +11,20 @@ import Tracker from './components/screens/Tracker';
 import {reducer, initialState} from './reducer/userReducer';
 
 export const UserContext = createContext();
+
 const Routing = () =>{
   const history = useHistory()
+  const {state,dispatch} = useContext(UserContext)
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem("user"))
+    if(user){
+      dispatch({type:"USER",payload:user})
+    }else{
+      if(!history.location.pathname.startsWith('/reset'))
+           history.push('/login')
+    }
+  },[])
+
   return(
     <Switch>
       <Route exact path="/">

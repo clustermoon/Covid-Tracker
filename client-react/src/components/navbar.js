@@ -1,18 +1,30 @@
-import React from 'react';
-
+import React, {useContext} from 'react';
+import {Link} from 'react-router-dom';
+import {UserContext} from '../App';
 
 const NavBar = () =>{
+  const {state, dispatch} = useContext(UserContext)
+  const renderList = () =>{
+    if(state){
+      return [
+        <li><Link to="/profile" >Profile</Link></li>,
+        <li><Link to="/tracker" >Tracker</Link></li>,
+        <li><Link to="/signout">Signout</Link></li>
+      ]
+    }else{
+      return [
+        <li><Link to="/signup">SignUp</Link></li>,
+        <li><Link to="/login">login</Link></li>
+      ]
+    }
+  }
+
   return(
     <nav>
       <div className="nav-wrapper">
-          <a href="/tracker" className="brand-logo">Home</a>
-          <ul id="nav-mobile" className="left">
-            <li><a href="/profile" >Profile</a></li>
-            <li><a href="/login">login</a></li>
-          </ul>
+          <Link to="/" className="brand-logo">Home</Link>
           <ul id="nav-mobile" className="right" >
-            <li><a href="/about">About</a></li>
-            <li><a href="/signout">Signout</a></li>
+            {renderList()}
           </ul>
 
       </div>

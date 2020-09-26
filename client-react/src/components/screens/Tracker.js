@@ -51,7 +51,7 @@ export default function Tracker(){
     const history = useHistory();
     //Control the markers state
     const [markers, setMarkers] = React.useState([]); 
-    const markerAddress = [];     
+    const markerPositions = [];     
     const markerCoords = [];   
     const postData = () =>{
         fetch("/tracker", {
@@ -61,7 +61,7 @@ export default function Tracker(){
                 "Authorization":"Bearer "+localStorage.getItem("jwt")
             },
             body:JSON.stringify({
-                markerAddress,
+                markerPositions,
             })
         }).then(res=>res.json())
         .then(data=>{
@@ -87,8 +87,8 @@ export default function Tracker(){
         Geocode.fromLatLng(lat, lng).then(
             response => {
                 const address = response.results[0].formatted_address;
-                console.log(markerAddress);
-                markerAddress.push(address);
+                console.log(markerPositions);
+                markerPositions.push(address);
             },
             error => {
                 console.log(error);
@@ -129,6 +129,7 @@ export default function Tracker(){
                 {markers.map(markers =>
                     <li key={markers.id}>
                         {markers.id} Marker
+                        {getAddress(markers)}
                         {pushCoords(markers)}
                     </li>
 
@@ -151,7 +152,6 @@ export default function Tracker(){
                     center={mapCenter}
                     options={mapOptions}
                     onClick={(event)=>{        
-                        getAddress(event); 
                         setMarkers(current => [...current, {
                             lat: event.latLng.lat(),
                             lng: event.latLng.lng(),
