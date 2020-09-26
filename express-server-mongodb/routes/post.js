@@ -7,7 +7,8 @@ const Post =  mongoose.model("Post")
 router.post("/tracker", requirelogin, (req, res)=>{
     const markerPositions = req.body;
     const post = new Post({
-        markerPositions
+        markerPositions,
+        postedBy:req.user
     })
     post.save().then(result=>{
         console.log("success")
@@ -26,5 +27,17 @@ router.get('/allpost', requirelogin, (req, res)=>{
         console.log(err);
     })
 })
+
+router.get('/mypost', requirelogin,(req,res)=>{
+    Post.find({postedBy:req.user._id})
+    .populate("PostedBy","_id name")
+    .then(mypost=>{
+        res.json({mypost})
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
 
 module.exports = router

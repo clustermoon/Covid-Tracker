@@ -3,16 +3,15 @@ import React, {useState, useEffect} from 'react';
 
 const Profile = ()=>{
     const [data, setData] = useState([]);
-    fetch('/allpost', {
+    fetch('/mypost', {
         headers: {
             "Authorization" : "Bearer " + localStorage.getItem("jwt")
         }
     }).then(res=>res.json())
     .then(result=>{
-        //console.log(result)
-        setData(result.posts);
+        console.log(result)
+        //setData(result.myposts.markerPositions);
     })
-
 
     return(
         <div className="oContainer">
@@ -20,6 +19,7 @@ const Profile = ()=>{
             {data.map(item=>{
                 return(
                     <div>
+                        {item}
                     </div>
                 )
             })}

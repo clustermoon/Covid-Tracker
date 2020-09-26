@@ -40,8 +40,7 @@ router.post('/signup', (req, res)=>{
                 username,
                 password:hashedpassword,
                 firstName,
-                lastName,
-                markerPositions
+                lastName
             });
     
             user.save()

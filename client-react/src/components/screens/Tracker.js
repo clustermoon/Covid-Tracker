@@ -51,18 +51,19 @@ export default function Tracker(){
     const history = useHistory();
     //Control the markers state
     const [markers, setMarkers] = React.useState([]); 
-    const markerPositions = [];     
+    const markerPositions = []    
     const markerCoords = [];   
     const postData = () =>{
+        console.log(markerCoords)
         fetch("/tracker", {
             method: "post",
             headers:{
-                "Content-Type":"application/json",
+                "Content-Type":"text/html",
                 "Authorization":"Bearer "+localStorage.getItem("jwt")
             },
-            body:JSON.stringify({
-                markerPositions,
-            })
+            body:{
+                markerCoords,
+            }
         }).then(res=>res.json())
         .then(data=>{
             if(data.error){
