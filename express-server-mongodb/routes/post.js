@@ -5,9 +5,9 @@ const requirelogin = require('../middleware/requireLogin');
 const Post =  mongoose.model("Post")
 
 router.post("/tracker", requirelogin, (req, res)=>{
-    const markerPositions = req.body;
+    const markers = req.body;
     const post = new Post({
-        markerPositions,
+        markers,
         postedBy:req.user
     })
     post.save().then(result=>{

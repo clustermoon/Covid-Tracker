@@ -29,7 +29,7 @@ Geocode.setLanguage("en");
 const libraries = ["places"]
 const mapContainerStyle = {
     width: '68vw',
-    height: '82vh',
+    height: '75vh',
 }
 const mapCenter = {
     lat: 43.653225,
@@ -40,6 +40,8 @@ const mapOptions = {
     disableDefaultUI: true,
     zoomControl: true
 }
+var addresses = new Array();
+var placeIndex = -1;
 
 //-----------------------------------------------------------------------
 
@@ -49,21 +51,16 @@ export default function Tracker(){
         libraries,
     });
     const history = useHistory();
-    //Control the markers state
-    const [markers, setMarkers] = React.useState([]); 
-    const markerPositions = []    
-    const markerCoords = [];   
     const postData = () =>{
-        console.log(markerCoords)
         fetch("/tracker", {
             method: "post",
             headers:{
-                "Content-Type":"text/html",
+                "Content-Type":"application/json",
                 "Authorization":"Bearer "+localStorage.getItem("jwt")
             },
-            body:{
-                markerCoords,
-            }
+            body:JSON.stringify({
+                markers,
+            })
         }).then(res=>res.json())
         .then(data=>{
             if(data.error){
@@ -75,43 +72,34 @@ export default function Tracker(){
         });
     }
 
-    function pushCoords(markers){
-        markerCoords.push([
-            markers.lat,
-            markers.lng
-        ])
-    }
-
-    const getAddress = (markers) =>{
-        var lat = markers.lat;
-        var lng = markers.lng;
-        Geocode.fromLatLng(lat, lng).then(
-            response => {
-                const address = response.results[0].formatted_address;
-                console.log(markerPositions);
-                markerPositions.push(address);
-            },
-            error => {
-                console.log(error);
-            }
-        )
-    }
-
+    
+    //Control the markers state
+    const [markers, setMarkers] = React.useState([]);
+    //unique key for arrays
+    const index = markers.length;
 
     //Call back function to stop rerenders
     const mapRef = React.useRef();
     const onMapLoad = React.useCallback((map) => {
         mapRef.current = map;
     }, []);
-    //unique key for arrays
-    const index = markers.length;
 
     //pan to current selection
     const panTo = React.useCallback(({lat, lng}) => {
         mapRef.current.panTo({lat, lng});
         mapRef.current.setZoom(14);
     }, []);
+
+    const getAddress = (event) =>{
+        Geocode.fromLatLng(event.latLng.lat(), event.latLng.lng()).then(
+            response=>{
+                const Address = response.results[0].formatted_address
+                addresses.push(Address)
+            }
+        );
+    };
     
+
     
     //Load error catches
     if (loadError) return "Error loading maps";
@@ -130,8 +118,6 @@ export default function Tracker(){
                 {markers.map(markers =>
                     <li key={markers.id}>
                         {markers.id} Marker
-                        {getAddress(markers)}
-                        {pushCoords(markers)}
                     </li>
 
                 )}
@@ -152,14 +138,16 @@ export default function Tracker(){
                     zoom={8}
                     center={mapCenter}
                     options={mapOptions}
-                    onClick={(event)=>{        
+                    onClick={(event)=>{
+                        getAddress(event); 
                         setMarkers(current => [...current, {
                             lat: event.latLng.lat(),
                             lng: event.latLng.lng(),
                             id: index,
-                            position: []
                         },
                         ]);
+                        placeIndex = placeIndex + 1;
+                        console.log(markers);
                     }}
                     onLoad={onMapLoad}
                 >
@@ -172,6 +160,9 @@ export default function Tracker(){
                     ))}
 
                 </GoogleMap>
+            </div>
+            <div className="child pTag">
+                    <h4>{addresses[placeIndex]}</h4>
             </div>
         </div>
         <div className="bg"/>
@@ -260,5 +251,8 @@ function Search({ panTo }){
 }
 
 //-----------------------------------------------------------------------
+
+
+
 
 //-----------------------------------------------------------------------
