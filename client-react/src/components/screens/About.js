@@ -19,8 +19,8 @@ const About = ()=>{
 
                 <h3 className="child pTag">Team Jango</h3>
                 <div className="pTag">
-                    <img className="teamImg" src="img_david.jpg" ></img>
-                    <img className="teamImg" src="img_micheal.png" ></img>
+                    <img className="teamImg" src="img_david.jpg" alt="David"></img>
+                    <img className="teamImg" src="img_micheal.png" alt="Micheal"></img>
                 </div>
                 <p className="child pTag" >David Wommack -&- Micheal Brady</p>
                 <div className="iContainer" >

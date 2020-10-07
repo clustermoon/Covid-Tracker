@@ -1,14 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
     GoogleMap,
     useLoadScript, 
-    Marker, 
-    InfoWindow,
+    Marker
 } from "@react-google-maps/api";
 import mapStyles from '../../mapStyles';
 
 
-var m_list = new Array;
+var m_list = new Array([]);
 const mapContainerStyle = {
     width: '100vw',
     height: '100vh',

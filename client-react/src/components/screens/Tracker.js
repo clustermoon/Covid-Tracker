@@ -40,7 +40,7 @@ const mapOptions = {
     disableDefaultUI: true,
     zoomControl: true
 }
-var addresses = new Array();
+var addresses = [];
 var placeIndex = -1;
 
 //-----------------------------------------------------------------------
@@ -91,15 +91,16 @@ export default function Tracker(){
     }, []);
 
     const getAddress = (event) =>{
-        Geocode.fromLatLng(event.latLng.lat(), event.latLng.lng()).then(
+        var vLat = event.latLng.lat();
+        var vLng = event.latLng.lng();
+        Geocode.fromLatLng(vLat, vLng).then(
             response=>{
                 const Address = response.results[0].formatted_address
-                addresses.push(Address)
+                addresses.push(Address);
+                console.log(addresses);
             }
         );
     };
-    
-
     
     //Load error catches
     if (loadError) return "Error loading maps";
@@ -117,7 +118,7 @@ export default function Tracker(){
                 <li id="lI" ></li>
                 {markers.map(markers =>
                     <li key={markers.id}>
-                        {markers.id} Marker
+                        {markers.id} Marker <button className="btn btn-secondary" type="button" onClick={()=>deleteMarker()} >Delete Marker</button>
                     </li>
 
                 )}
@@ -252,7 +253,9 @@ function Search({ panTo }){
 
 //-----------------------------------------------------------------------
 
-
+function deleteMarker(){
+    //code
+}
 
 
 //-----------------------------------------------------------------------
