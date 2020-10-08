@@ -40,8 +40,6 @@ const mapOptions = {
     disableDefaultUI: true,
     zoomControl: true
 }
-var addresses = [];
-var placeIndex = -1;
 
 //-----------------------------------------------------------------------
 
@@ -96,11 +94,17 @@ export default function Tracker(){
         Geocode.fromLatLng(vLat, vLng).then(
             response=>{
                 const Address = response.results[0].formatted_address
-                addresses.push(Address);
-                console.log(addresses);
+                document.getElementById('addy').innerHTML = Address;
             }
         );
     };
+
+    function deleteMarker(){
+        markers.length = 0;
+        window.location.reload();
+
+    }
+
     
     //Load error catches
     if (loadError) return "Error loading maps";
@@ -118,10 +122,12 @@ export default function Tracker(){
                 <li id="lI" ></li>
                 {markers.map(markers =>
                     <li key={markers.id}>
-                        {markers.id} Marker <button className="btn btn-secondary" type="button" onClick={()=>deleteMarker()} >Delete Marker</button>
+                        {markers.id} Marker
                     </li>
 
                 )}
+                <br/>
+                <button className="btn-secondary" type="button" name="redo" onClick={()=> deleteMarker()} >Redo</button>
             </ul>
             <button 
                 className="btn btn-primary" 
@@ -147,7 +153,6 @@ export default function Tracker(){
                             id: index,
                         },
                         ]);
-                        placeIndex = placeIndex + 1;
                         console.log(markers);
                     }}
                     onLoad={onMapLoad}
@@ -157,13 +162,16 @@ export default function Tracker(){
                         <Marker
                             key={marker.id}
                             position={{lat: marker.lat, lng: marker.lng }}
+                            onClick={(event)=>{
+                                console.log(event)
+                            }}
                         />
                     ))}
 
                 </GoogleMap>
             </div>
             <div className="child pTag">
-                    <h4>{addresses[placeIndex]}</h4>
+                <h4 id="addy"></h4>    
             </div>
         </div>
         <div className="bg"/>
@@ -252,10 +260,5 @@ function Search({ panTo }){
 }
 
 //-----------------------------------------------------------------------
-
-function deleteMarker(){
-    //code
-}
-
 
 //-----------------------------------------------------------------------

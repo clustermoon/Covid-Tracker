@@ -22,13 +22,24 @@ const mapOptions = {
     zoomControl: true
 }
 
+function Reload(){
+    const [value, setvalue] = useState(0);
+    if(value <= 0){
+        return () => setvalue(value => ++value);
+    }
+}
+
 const Profile = ()=>{
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey : process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries : ["places"]
     })
+    
     var coords = [];
-    const [data, setData] = useState([]);
+
+
+
+
     fetch('/mypost', {
         headers: {
             "Authorization" : "Bearer " + localStorage.getItem("jwt")
@@ -43,17 +54,21 @@ const Profile = ()=>{
         console.log(m_list);
     })
 
+    
+
     if(loadError) return "Error loading maps";
     if(!isLoaded) return "Loading Maps";
 
     return(
 
-            <div>
+            <div className="profileRow">
+                <div className="profileMap">
                 <GoogleMap
                     mapContainerStyle={mapContainerStyle}
                     center={mapCenter}
                     options={mapOptions}
                     zoom={8}
+
                 >
 
                     {m_list.map((marker) => (
@@ -64,6 +79,7 @@ const Profile = ()=>{
                     ))}
 
                 </GoogleMap>
+                </div>
             </div>
 
     )
